@@ -1,0 +1,19 @@
+{
+  "name": "jql",
+  "version": "0.0.1",
+  "description": "JSON Query Language",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrewt3000/jql.git"
+  },
+  "author": "andrewt@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andrewt3000/jql/issues"
+  },
+  "homepage": "https://github.com/andrewt3000/jql#readme"
+}
