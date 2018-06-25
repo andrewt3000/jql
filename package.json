@@ -4,7 +4,7 @@
   "description": "JSON Query Language",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/andrewt3000/jql/issues"
   },
-  "homepage": "https://github.com/andrewt3000/jql#readme"
+  "homepage": "https://github.com/andrewt3000/jql#readme",
+  "devDependencies": {
+    "jest": "^23.2.0"
+  }
 }
