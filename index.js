@@ -70,13 +70,20 @@ function buildJoinFields(joins) {
   let sql = ""
   if (joins && joins.length > 0) {
     for (let j of joins) {
-      if (j.charAt(0) === "-") {
-        j = j.slice(1)
+      if(typeof j === "object"){
+        for(fld of j.fields){
+          //duplicate fields??? add alias?
+          sql += `, ${j.model}.${fld}  `  
+        }
+      }else{
+        if (j.charAt(0) === "-") {
+          j = j.slice(1)
+        }
+        if (!isValidTable(j)) {
+          throw new Error(`invalid join variable name: ${j}`)
+        }
+        sql += `, ${j}.name as ${j}Name `
       }
-      if (!isValidTable(j)) {
-        throw new Error(`invalid join variable name: ${j}`)
-      }
-      sql += `, ${j}.name as ${j}Name `
     }
   }
   return sql
@@ -95,20 +102,38 @@ function buildJoins(model, body) {
 
   let sql = ""
   for (let j of joins) {
-    let outer = false
-    if (j.charAt(0) === "-") {
-      j = j.slice(1)
-      outer = true
-    }
-    if (!isValidTable(j)) {
-      throw new Error(`invalid table: ${j}`)
-    }
-    if (outer) {
-      sql += " left outer join "
+    if(typeof j === "object"){
+      let outer = false
+      let joinTable = j.model
+      if (j.model.charAt(0) === "-") {
+        joinTable = j.model.slice(1)
+        outer = true
+      }
+      if (!isValidTable(joinTable)) {
+        throw new Error(`invalid table: ${joinTable}`)
+      }
+      if (outer) {
+        sql += " left outer join "
+      } else {
+        sql += " inner join "
+      }
+      sql += ` ${joinTable} on ${joinTable}.id = ${joinTable}ID `
     } else {
-      sql += " inner join "
+      let outer = false
+      if (j.charAt(0) === "-") {
+        j = j.slice(1)
+        outer = true
+      }
+      if (!isValidTable(j)) {
+        throw new Error(`invalid table: ${j}`)
+      }
+      if (outer) {
+        sql += " left outer join "
+      } else {
+        sql += " inner join "
+      }
+      sql += ` ${j} on ${j}.id = ${j}ID `
     }
-    sql += ` ${j} on ${j}.id = ${j}ID `
   }
   return sql
 }

@@ -2,6 +2,7 @@ const validation = require("./validation")
 const { getSelectSql, getCountSql, getUpdateSql, getInsertSql } = require("./")
 
 var schema = {
+  machine: {columns:[{name:"ID"}, {name:"shortName"}]},
   statustable: {columns:[{name:"name"}]},
   lookuptable: {columns:[{name:"name"}]},
   mytable: {
@@ -51,6 +52,9 @@ test("test select", () => {
 
   const multiCondition = {where: {qty:{$ne: 1}, status:1, qty2:{$gte:2}}}
   expect(getSelectSql(model, multiCondition)).toMatch("select mytable.*   from mytable where mytable.[qty] <> 1  and mytable.[status] = 1  and mytable.[qty2] >= 2 ")
+
+  const newJoin = {joins:[{model:"machine", fields:["ID", "shortName"]}]}
+  expect(getSelectSql(model, newJoin)).toMatch("select mytable.*  , machine.ID  , machine.shortName   from mytable  inner join  machine on machine.id = machineID ")
 
 })
 
