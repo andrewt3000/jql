@@ -1,5 +1,5 @@
 {
-  "name": "jql",
+  "name": "jq-lang",
   "version": "0.0.1",
   "description": "JSON Query Language",
   "main": "index.js",
