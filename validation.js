@@ -12,6 +12,16 @@ exports.isValidTable = function(tableName){
   return false
 }
 
+exports.isComputedColumn = function(tableName, columnName) {
+  const column = schema[tableName.toLowerCase()].columns.find(
+    col => col.name.toLowerCase() === columnName.toLowerCase()
+  )
+  if (column && column.isComputed) {
+    return true
+  }
+  return false
+}
+
 exports.isValidColumn = function(tableName, columnName, joins = []){
   const column = schema[tableName.toLowerCase()].columns.find(
     col => col.name === columnName.toLowerCase()

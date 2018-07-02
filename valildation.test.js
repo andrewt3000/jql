@@ -1,11 +1,12 @@
 const validation = require("./validation")
-const { isValidTable, isValidColumn } = require("./validation")
+const { isValidTable, isValidColumn, isComputedColumn } = require("./validation")
 
 var schema = {
   mytable: {
     columns: [
       { name: "mycolumn" },
-      { name: "my_column2" }
+      { name: "my_column2" },
+      { name: "computedCol", isComputed: 1 }
     ]
   }
 }
@@ -22,4 +23,7 @@ test("test validation utils", () => {
     expect(isValidColumn("mytable", "my column")).toBeFalsy()
     expect(isValidColumn("mytable", "mycolumn'")).toBeFalsy()
     expect(isValidColumn("mytable", "mycolumn;")).toBeFalsy()
+
+    expect(isComputedColumn("mytable", "computedCol")).toBeTruthy()
+    expect(isComputedColumn("mytable", "mycolumn")).toBeFalsy()
   })

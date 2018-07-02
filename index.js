@@ -1,5 +1,5 @@
 const { isNumber } = require("util")
-const { isValidTable, isValidColumn } = require("./validation")
+const { isValidTable, isValidColumn, isComputedColumn } = require("./validation")
 
 exports.getSelectSql = function(model, body) {
   var sql = buildSelectFrom(model, body)
@@ -20,7 +20,7 @@ exports.getCountSql = function(model, body) {
 exports.getUpdateSql = function(model, body) {
   let sql = `update ${model} set `
   for (const key in body) {
-    if (key.toLowerCase() !== "id" && isValidColumn(model, key)) {
+    if (key.toLowerCase() !== "id" && isValidColumn(model, key) && !isComputedColumn(model, key)) {
       sql += `[${key}] = @${key}, `
     }
   }
@@ -32,7 +32,7 @@ exports.getInsertSql = function(model, body) {
   let values = ""
   let sql = `insert into ${model} (`
   for (const key in body) {
-    if (isValidColumn(model, key)) {
+    if (isValidColumn(model, key) && !isComputedColumn(model, key)) {
       sql += `[${key}], `
       values += `@${key}, `
     }
