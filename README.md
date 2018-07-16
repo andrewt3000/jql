@@ -1,11 +1,9 @@
-# jql
+# Install jql
 
 npm install jq-lang
 
-
 ### JQL
-JQL = JSON Query Language  
-Post body for query contains json object with these fields. JQL is influenced by mongo db.  
+JQL = JSON Query Language translates json to sql code. JQL is heavily influenced by mongo db.  
 
 ### Normalization Conventions
 jql depends on 3 normalization conventions:  
@@ -13,6 +11,8 @@ jql depends on 3 normalization conventions:
 2. FKs follow naming convention {tableName}ID.  
 3. FK lookup tables have a "name" field for display. Use a computed column for names that are composites.   
 
+### JQL query object
+Post body for query contains json object with these fields. 
 
 Property | Description |Type |
 ---|--- |---|
