@@ -71,22 +71,36 @@ function buildJoinFields(joins) {
   if (joins && joins.length > 0) {
     for (let j of joins) {
       if(typeof j === "object"){
-        for(fld of j.fields){
-          //duplicate fields??? add alias?
-          sql += `, ${j.model}.${fld}  `  
+        if('fields' in j){
+          for(fld of j.fields){
+            joinTable = sliceMinus(j.model)
+            sql += `, ${joinTable}.${fld}  `  
+          } 
+        }else{
+          sql += defaultFieldsForJoin(j.model)
         }
       }else{
-        if (j.charAt(0) === "-") {
-          j = j.slice(1)
-        }
-        if (!isValidTable(j)) {
-          throw new Error(`invalid join variable name: ${j}`)
-        }
-        sql += `, ${j}.name as ${j}Name `
+        sql += defaultFieldsForJoin(j)
       }
     }
   }
   return sql
+}
+
+function sliceMinus(tbl){
+  if (tbl.charAt(0) === "-") {
+    tbl = tbl.slice(1)
+  }
+  return tbl
+}
+
+function defaultFieldsForJoin(joinTable){
+  joinTable = sliceMinus(joinTable)
+  if (!isValidTable(joinTable)) {
+    throw new Error(`invalid join variable name: ${joinTable}`)
+  }
+  return `, ${joinTable}.name as ${joinTable}Name `
+
 }
 
 function buildJoins(model, body) {
@@ -102,40 +116,51 @@ function buildJoins(model, body) {
 
   let sql = ""
   for (let j of joins) {
+    let outer = false
+    let joinTable = ''
+
     if(typeof j === "object"){
-      let outer = false
-      let joinTable = j.model
-      if (j.model.charAt(0) === "-") {
-        joinTable = j.model.slice(1)
-        outer = true
-      }
-      if (!isValidTable(joinTable)) {
-        throw new Error(`invalid table: ${joinTable}`)
-      }
-      if (outer) {
-        sql += " left outer join "
-      } else {
-        sql += " inner join "
-      }
-      sql += ` ${joinTable} on ${joinTable}.id = ${joinTable}ID `
-    } else {
-      let outer = false
-      if (j.charAt(0) === "-") {
-        j = j.slice(1)
-        outer = true
-      }
-      if (!isValidTable(j)) {
-        throw new Error(`invalid table: ${j}`)
-      }
-      if (outer) {
-        sql += " left outer join "
-      } else {
-        sql += " inner join "
-      }
-      sql += ` ${j} on ${j}.id = ${j}ID `
+      joinTable = j.model
+    }else{
+      joinTable = j
     }
+    if (joinTable.charAt(0) === "-") {
+      joinTable = joinTable.slice(1)
+      outer = true
+    }
+    if (!isValidTable(joinTable)) {
+      throw new Error(`invalid table: ${joinTable}`)
+    }
+    if (outer) {
+      sql += " left outer join "
+    } else {
+      sql += " inner join "
+    }
+    sql += buildJoinOn(joinTable, j)
   }
+
   return sql
+}
+
+function buildJoinOn(joinTable, joinObject){
+  if(typeof joinObject === "object" && 'on' in joinObject){
+    let joinClause =  ` ${joinTable} on `
+
+    let first = true
+    for(const key in joinObject['on']){
+      if(!first){
+        joinClause += ' and '
+      }
+      joinClause += ` ${key} = ${joinObject['on'][key]} `
+      first = false
+    }
+    
+
+    return joinClause
+  }
+
+  return ` ${joinTable} on ${joinTable}.id = ${joinTable}ID `
+
 }
 
 buildWhere = function(model, body) {

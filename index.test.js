@@ -9,6 +9,7 @@ var schema = {
     columns: [
       { name: "id" },
       { name: "name" },
+      { name: "machineID" },
       { name: "test" },
       { name: "f1" },
       { name: "f2" },
@@ -27,7 +28,7 @@ const model = "mytable"
 const body = {
   fields: ["id", "name", "test"],
   where: { filter: 1, val: 2 },
-  joins: ["statusTable", "-lookupTable"],
+  joins: ["statusTable", "-lookupTable",{model:"machine",on:{"machine.ID":"mytable.machineID"}}],
   orderBy: ["name", "-status"],
   limit: 10,
   offset: 3
@@ -35,10 +36,7 @@ const body = {
 
 test("test select", () => {
   expect(getSelectSql(model, body)).toMatch(
-    "select mytable.[id], mytable.[name], mytable.[test] , statusTable.name as statusTableName , lookupTable.name as lookupTableName  " +
-    "from mytable  inner join  statusTable on statusTable.id = statusTableID  " +
-    "left outer join  lookupTable on lookupTable.id = lookupTableID " +
-    "where mytable.[filter] = 1  and mytable.[val] = 2 order by [name], [status] DESC OFFSET 3 ROWS  FETCH NEXT 10 ROWS ONLY"
+    `select mytable.[id], mytable.[name], mytable.[test] , statusTable.name as statusTableName , lookupTable.name as lookupTableName , machine.name as machineName  from mytable  inner join  statusTable on statusTable.id = statusTableID  left outer join  lookupTable on lookupTable.id = lookupTableID  inner join  machine on  machine.ID = mytable.machineID where mytable.[filter] = 1  and mytable.[val] = 2 order by [name], [status] DESC OFFSET 3 ROWS  FETCH NEXT 10 ROWS ONLY `
   )
 
   const whereNotEqual = {where: {qty:{$ne: 1}}}
