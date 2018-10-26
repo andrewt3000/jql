@@ -12,13 +12,13 @@ exports.getSelectSql = function(model, body) {
 }
 
 exports.getCountSql = function(model, body) {
-  let sql = `select count(*) as count from ${model} `
+  let sql = `select count(*) as count from [${model}] `
   sql += buildWhere(model, body)
   return sql
 }
 
 exports.getUpdateSql = function(model, body) {
-  let sql = `update ${model} set `
+  let sql = `update [${model}] set `
   for (const key in body) {
     if (key.toLowerCase() !== "id" && isValidColumn(model, key) && !isComputedColumn(model, key)) {
       sql += `[${key}] = @${key}, `
@@ -30,7 +30,7 @@ exports.getUpdateSql = function(model, body) {
 
 exports.getInsertSql = function(model, body) {
   let values = ""
-  let sql = `insert into ${model} (`
+  let sql = `insert into [${model}] (`
   for (const key in body) {
     if (isValidColumn(model, key) && !isComputedColumn(model, key)) {
       sql += `[${key}], `
@@ -54,15 +54,15 @@ function buildSelectFrom(model, body) {
       if (!isValidColumn(model, f, joins)) {
         throw new Error(`invalid ${model} variable name: ${f}`)
       }
-      sql += `${model}.[${f}], `
+      sql += `[${model}].[${f}], `
     }
     // cut off last comma
     sql = `${sql.slice(0, -2)} `
   } else {
-    sql += `${model}.*  `
+    sql += `[${model}].*  `
   }
   sql += buildJoinFields(joins)
-  sql += ` from ${model} `
+  sql += ` from [${model}] `
   return sql
 }
 
@@ -99,7 +99,7 @@ function defaultFieldsForJoin(joinTable){
   if (!isValidTable(joinTable)) {
     throw new Error(`invalid join variable name: ${joinTable}`)
   }
-  return `, ${joinTable}.name as ${joinTable}Name `
+  return `, [${joinTable}].name as ${joinTable}Name `
 
 }
 
@@ -144,7 +144,7 @@ function buildJoins(model, body) {
 
 function buildJoinOn(joinTable, joinObject){
   if(typeof joinObject === "object" && 'on' in joinObject){
-    let joinClause =  ` ${joinTable} on `
+    let joinClause =  ` [${joinTable}] on `
 
     let first = true
     for(const key in joinObject['on']){
@@ -159,7 +159,7 @@ function buildJoinOn(joinTable, joinObject){
     return joinClause
   }
 
-  return ` ${joinTable} on ${joinTable}.id = ${joinTable}ID `
+  return ` [${joinTable}] on [${joinTable}].id = ${joinTable}ID `
 
 }
 
@@ -188,21 +188,21 @@ buildWhere = function(model, body) {
 
     const value = where[key]
     if (isNumber(value)) {
-      sql += `${model}.[${key}] = ${value} `
+      sql += `[${model}].[${key}] = ${value} `
     } else if (typeof value === "object") {
       if (value.hasOwnProperty("$ne")) {
-        sql += `${model}.[${key}] <> ${value["$ne"]} `
+        sql += `[${model}].[${key}] <> ${value["$ne"]} `
       } else if (value.hasOwnProperty("$gt")) {
-        sql += `${model}.[${key}] > ${value["$gt"]} `
+        sql += `[${model}].[${key}] > ${value["$gt"]} `
       } else if (value.hasOwnProperty("$lt")) {
-        sql += `${model}.[${key}] < ${value["$lt"]} `
+        sql += `[${model}].[${key}] < ${value["$lt"]} `
       } else if (value.hasOwnProperty("$gte")) {
-        sql += `${model}.[${key}] >= ${value["$gte"]} `
+        sql += `[${model}].[${key}] >= ${value["$gte"]} `
       } else if (value.hasOwnProperty("$lte")) {
-        sql += `${model}.[${key}] <= ${value["$lte"]} `
+        sql += `[${model}].[${key}] <= ${value["$lte"]} `
       }
     } else {
-      sql += `${model}.[${key}] = '${value}' `
+      sql += `[${model}].[${key}] = '${value}' `
     }
     firstPass = false
   }

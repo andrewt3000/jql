@@ -28,7 +28,7 @@ const model = "mytable"
 const body = {
   fields: ["id", "name", "test"],
   where: { filter: 1, val: 2 },
-  joins: ["statusTable", "-lookupTable",{model:"machine",on:{"machine.ID":"mytable.machineID"}}],
+  joins: ["statusTable", "-lookupTable",{model:"machine",on:{"[machine].ID":"[mytable].machineID"}}],
   orderBy: ["name", "-status"],
   limit: 10,
   offset: 3
@@ -36,42 +36,42 @@ const body = {
 
 test("test select", () => {
   expect(getSelectSql(model, body)).toMatch(
-    `select mytable.[id], mytable.[name], mytable.[test] , statusTable.name as statusTableName , lookupTable.name as lookupTableName , machine.name as machineName  from mytable  inner join  statusTable on statusTable.id = statusTableID  left outer join  lookupTable on lookupTable.id = lookupTableID  inner join  machine on  machine.ID = mytable.machineID where mytable.[filter] = 1  and mytable.[val] = 2 order by [name], [status] DESC OFFSET 3 ROWS  FETCH NEXT 10 ROWS ONLY `
+    `select [mytable].[id], [mytable].[name], [mytable].[test] , [statusTable].name as statusTableName , [lookupTable].name as lookupTableName , [machine].name as machineName  from [mytable]  inner join  [statusTable] on [statusTable].id = statusTableID  left outer join  [lookupTable] on [lookupTable].id = lookupTableID  inner join  [machine] on  [machine].ID = [mytable].machineID where [mytable].[filter] = 1  and [mytable].[val] = 2 order by [name], [status] DESC OFFSET 3 ROWS  FETCH NEXT 10 ROWS ONLY `
   )
 
   const whereNotEqual = {where: {qty:{$ne: 1}}}
-  expect(getSelectSql(model, whereNotEqual)).toMatch("select mytable.*   from mytable where mytable.[qty] <> 1 ")
+  expect(getSelectSql(model, whereNotEqual)).toMatch("select [mytable].*   from [mytable] where [mytable].[qty] <> 1 ")
 
   const greaterThan = {where: { qty: { $gt: 20 } }}
-  expect(getSelectSql(model, greaterThan)).toMatch("select mytable.*   from mytable where mytable.[qty] > 20 ")
+  expect(getSelectSql(model, greaterThan)).toMatch("select [mytable].*   from [mytable] where [mytable].[qty] > 20 ")
 
   const greaterThanEqual = {where: { qty: { $gte: 20 } }}
-  expect(getSelectSql(model, greaterThanEqual)).toMatch("select mytable.*   from mytable where mytable.[qty] >= 20 ")
+  expect(getSelectSql(model, greaterThanEqual)).toMatch("select [mytable].*   from [mytable] where [mytable].[qty] >= 20 ")
 
   const multiCondition = {where: {qty:{$ne: 1}, status:1, qty2:{$gte:2}}}
-  expect(getSelectSql(model, multiCondition)).toMatch("select mytable.*   from mytable where mytable.[qty] <> 1  and mytable.[status] = 1  and mytable.[qty2] >= 2 ")
+  expect(getSelectSql(model, multiCondition)).toMatch("select [mytable].*   from [mytable] where [mytable].[qty] <> 1  and [mytable].[status] = 1  and [mytable].[qty2] >= 2 ")
 
   const newJoin = {joins:[{model:"machine", fields:["ID", "shortName"]}]}
-  expect(getSelectSql(model, newJoin)).toMatch("select mytable.*  , machine.ID  , machine.shortName   from mytable  inner join  machine on machine.id = machineID ")
+  expect(getSelectSql(model, newJoin)).toMatch("select [mytable].*  , machine.ID  , machine.shortName   from [mytable]  inner join  [machine] on [machine].id = machineID ")
 
 })
 
 test("test count", () => {
   expect(getCountSql(model, body)).toMatch(
-    "select count(*) as count from mytable where mytable.[filter] = 1  and mytable.[val] = 2 "
+    "select count(*) as count from [mytable] where [mytable].[filter] = 1  and [mytable].[val] = 2 "
   )
 })
 
 const dataBody = {f1: "yo", f2:"fubar"}
 test("test insert", () => {
   expect(getInsertSql(model, dataBody)).toMatch(
-    "insert into mytable ([f1], [f2] ) values (@f1, @f2 ); SELECT SCOPE_IDENTITY() AS id"
+    "insert into [mytable] ([f1], [f2] ) values (@f1, @f2 ); SELECT SCOPE_IDENTITY() AS id"
   )
 })
 
 test("test update", () => {
   expect(getUpdateSql(model, dataBody)).toMatch(
-    "update mytable set [f1] = @f1, [f2] = @f2 where id = @id"
+    "update [mytable] set [f1] = @f1, [f2] = @f2 where id = @id"
   )
 })
 
