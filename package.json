@@ -1,6 +1,6 @@
 {
   "name": "jq-lang",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "JSON Query Language",
   "main": "index.js",
   "scripts": {
