@@ -189,7 +189,11 @@ buildWhere = function(model, body) {
     const value = where[key]
     if (isNumber(value)) {
       sql += `[${model}].[${key}] = ${value} `
-    } else if (typeof value === "object") {
+    }
+      else if (value === null) {
+      sql += `[${model}].[${key}] IS NULL `
+    }  
+    else if (typeof value === "object") {
       if (value.hasOwnProperty("$ne")) {
         sql += `[${model}].[${key}] <> ${value["$ne"]} `
       } else if (value.hasOwnProperty("$gt")) {
