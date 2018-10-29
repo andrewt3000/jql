@@ -18,7 +18,8 @@ var schema = {
       { name: "status"},
       { name: "qty"},
       { name: "qty2"},
-      { name: 'price'}
+      { name: 'price'},
+      { name: 'mydate'}
     ]
   }
 }
@@ -62,6 +63,10 @@ test("test buildWhere", () => {
   const testBody = {where: {price:{$gt:100, $lt:200}}}
   expect(buildWhere(testModel, testBody)).toMatch(
     "where [mytable].[price] > 100  and [mytable].[price] < 200 "
+  )
+  const dateBodyTest = {where: {mydate:{$gt:'2018', $lt:'2019'}}}
+  expect(buildWhere(testModel, dateBodyTest)).toMatch(
+    "where [mytable].[mydate] > '2018'  and [mytable].[mydate] < '2019' "
   )
 })
 

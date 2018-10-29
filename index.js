@@ -195,21 +195,23 @@ buildWhere = function(model, body) {
     }  
     else if (typeof value === "object") {
       let firstValue = true
-      for(val in value){
+      for(operatorVal in value){
         if(!firstValue){
           sql += ' and '
         }
-        //sql +=  `[${model}].[${key}] <> ${value[val]} `
-        if (val === "$ne") {
-          sql += `[${model}].[${key}] <> ${value["$ne"]} `
-        } else if (val === "$gt") {
-          sql += `[${model}].[${key}] > ${value["$gt"]} `
-        } else if (val === "$lt") {
-          sql += `[${model}].[${key}] < ${value["$lt"]} `
-        } else if (val === "$gte") {
-          sql += `[${model}].[${key}] >= ${value["$gte"]} `
-        } else if (val === "$lte") {
-          sql += `[${model}].[${key}] <= ${value["$lte"]} `
+        setValue =  value[operatorVal]
+        if (typeof setValue === 'string' || setValue instanceof String)
+          setValue = "'" + setValue + "'"
+        if (operatorVal === "$ne") {
+          sql += `[${model}].[${key}] <> ${setValue} `
+        } else if (operatorVal === "$gt") {
+          sql += `[${model}].[${key}] > ${setValue} `
+        } else if (operatorVal === "$lt") {
+          sql += `[${model}].[${key}] < ${setValue} `
+        } else if (operatorVal === "$gte") {
+          sql += `[${model}].[${key}] >= ${setValue} `
+        } else if (operatorVal === "$lte") {
+          sql += `[${model}].[${key}] <= ${setValue} `
         }
         firstValue = false
       }
