@@ -6,10 +6,12 @@ npm install jq-lang
 JQL = JSON Query Language translates json to sql code. JQL is heavily influenced by mongo db.  
 
 ### Normalization Conventions
-jql depends on 3 normalization conventions:  
+jql depends on 2 normalization conventions:  
 1. All tables must have an ID field that is primary key and autoincrement.  
 2. FKs follow naming convention {tableName}ID.  
-3. FK lookup tables have a "name" field for display. Use a computed column for names that are composites.   
+
+There is also a 3rd convention that is optional.  
+FK lookup tables have a "name" field for display. Use a computed column for names that are composites.   
 
 ### JQL query object
 Post body for query contains json object with these fields. 
