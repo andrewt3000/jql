@@ -25,11 +25,9 @@ offset | offset for starting select (requires order by and limit) | int
 limit | limit the number of rows returned (requires order by and limit) typically used for paging. | int
 
 #### Where clause operators
-The default is Example {x:1, y:2} translates to "where x=1 and y=2"
 JQL has mongo db style where clause operators.
-Example: where: { qty: { $gt: 20 } } = where qty > 20
 
-property | effect |
+property | effect |   
 ---|---|
 $ne | not equal <>
 $gt | greater than >
@@ -37,3 +35,9 @@ $gte | greater than or equal to >=
 $lt | less than <
 $lte | less than or equal to  <=
 
+##### Examples
+jql | sql |
+---|---|
+where: { active: 1, deleted: 0} | where active =1 and deleted = 0
+where: { qty: { $gt: 20 } } | where qty > 20
+where: { price: { $gt: 1, $lt: 2 } | where price > 1 and price < 2
