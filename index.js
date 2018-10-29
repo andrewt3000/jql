@@ -194,16 +194,24 @@ buildWhere = function(model, body) {
       sql += `[${model}].[${key}] IS NULL `
     }  
     else if (typeof value === "object") {
-      if (value.hasOwnProperty("$ne")) {
-        sql += `[${model}].[${key}] <> ${value["$ne"]} `
-      } else if (value.hasOwnProperty("$gt")) {
-        sql += `[${model}].[${key}] > ${value["$gt"]} `
-      } else if (value.hasOwnProperty("$lt")) {
-        sql += `[${model}].[${key}] < ${value["$lt"]} `
-      } else if (value.hasOwnProperty("$gte")) {
-        sql += `[${model}].[${key}] >= ${value["$gte"]} `
-      } else if (value.hasOwnProperty("$lte")) {
-        sql += `[${model}].[${key}] <= ${value["$lte"]} `
+      let firstValue = true
+      for(val in value){
+        if(!firstValue){
+          sql += ' and '
+        }
+        //sql +=  `[${model}].[${key}] <> ${value[val]} `
+        if (val === "$ne") {
+          sql += `[${model}].[${key}] <> ${value["$ne"]} `
+        } else if (val === "$gt") {
+          sql += `[${model}].[${key}] > ${value["$gt"]} `
+        } else if (val === "$lt") {
+          sql += `[${model}].[${key}] < ${value["$lt"]} `
+        } else if (val === "$gte") {
+          sql += `[${model}].[${key}] >= ${value["$gte"]} `
+        } else if (val === "$lte") {
+          sql += `[${model}].[${key}] <= ${value["$lte"]} `
+        }
+        firstValue = false
       }
     } else {
       sql += `[${model}].[${key}] = '${value}' `

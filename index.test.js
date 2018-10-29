@@ -17,7 +17,8 @@ var schema = {
       { name: "val" },
       { name: "status"},
       { name: "qty"},
-      { name: "qty2"}
+      { name: "qty2"},
+      { name: 'price'}
     ]
   }
 }
@@ -54,6 +55,14 @@ test("test select", () => {
   const newJoin = {joins:[{model:"machine", fields:["ID", "shortName"]}]}
   expect(getSelectSql(model, newJoin)).toMatch("select [mytable].*  , machine.ID  , machine.shortName   from [mytable]  inner join  [machine] on [machine].id = machineID ")
 
+})
+
+test("test buildWhere", () => {
+  const testModel = "mytable"
+  const testBody = {where: {price:{$gt:100, $lt:200}}}
+  expect(buildWhere(testModel, testBody)).toMatch(
+    "where [mytable].[price] > 100  and [mytable].[price] < 200 "
+  )
 })
 
 test("test count", () => {
