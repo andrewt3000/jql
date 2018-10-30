@@ -5,6 +5,8 @@ npm install jq-lang
 ### JQL
 JQL = JSON Query Language translates json to sql code. JQL is heavily influenced by mongo db.  
 
+JQL can be integrated into [General Endpoint](https://github.com/andrewt3000/generalEndPoint) (GE), a data driven http api.  
+
 ### Normalization Conventions
 jql has 3 normalization conventions:  
 1. All tables must have an ID field that is primary key and autoincrement. This convention is **mandatory**.    
