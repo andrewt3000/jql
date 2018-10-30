@@ -17,12 +17,22 @@ Post body for query contains json object with these fields.
 Property | Description |Type |
 ---|--- |---|
 fields| table column names. If not set, returns tableName.* | string[]
-joins| Tables on which inner joins are performed.   Use -tableName for left outer join.<br/>  By default adds {joinTableName}Name to columns and joins based on naming convention.  Pass an object to specify fields  {model:"joinTable", fields\["myField1", "myField2"\]} | string[] or object[]
-where| object containing fields to form where clause. Example {x:1, y:2} translates to "where x=1 and y=2" See Where clause operators | object
+joins| Tables on which inner joins are performed.   | string[] or object[]
+where| Object containing fields to form where clause. See Where clause operators below. | object
 orderBy| array of strings of field names to order by. '-fieldName' for descending.| string[]
 children | table name for child records. if children property exists, it will return an additional array of objects for each child table in input array.  pulls based on foreign key convention | string[]
 offset | offset for starting select (requires order by and limit) | int 
 limit | limit the number of rows returned (requires order by and limit) typically used for paging. | int
+
+#### Join Operator object
+By default, pass a string. Use -tableName for left outer join. Default adds {joinTableName}Name to columns and joins based on naming convention. Pass an object to specify select fields.  
+
+jql | sql |
+---|---|
+joins: ["mytable"] | select myTableName... inner join  [mytable] on [mytable].id = mytableID
+joins: ["-mytable"] | left outer join  [mytable] on [mytable].id = mytableID
+joins: [{model:"mytable", fields:["myField1", "myField2"]}] | select myField1, myField2... iinner join  [mytable] on [mytable].id = mytableID
+joins: [{model:"machine",on:{"[machine].ID":"[mytable].machineID"}}] | inner join  [machine] on  [machine].ID = [mytable].machineID
 
 #### Where clause operators
 JQL has mongo db style where clause operators.
