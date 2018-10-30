@@ -1,5 +1,5 @@
 const validation = require("./validation")
-const { getSelectSql, getCountSql, getUpdateSql, getInsertSql } = require("./")
+const { getSelectSql, getCountSql, getUpdateSql, getInsertSql, buildJoins } = require("./")
 
 var schema = {
   machine: {columns:[{name:"ID"}, {name:"shortName"}]},
@@ -58,14 +58,36 @@ test("test select", () => {
 
 })
 
+test("test join", () => {
+  const testBody = {joins: ["mytable"]}
+  expect(buildJoins(model, testBody)).toMatch(
+    " inner join  [mytable] on [mytable].id = mytableID "
+  )
+
+  const outerJoinBody = {joins: ["-mytable"]}
+  expect(buildJoins(model, outerJoinBody)).toMatch(
+    " left outer join  [mytable] on [mytable].id = mytableID "
+  )
+
+  const fieldJoinBody = {joins: [{model:"mytable", fields:["myField1", "myField2"]}]}
+  expect(buildJoins(model, fieldJoinBody)).toMatch(
+    " inner join  [mytable] on [mytable].id = mytableID "
+  )
+
+  const onJoinBody = {joins: [{model:"machine",on:{"[machine].ID":"[mytable].machineID"}}]}
+  expect(buildJoins(model, onJoinBody)).toMatch(
+    " inner join  [machine] on  [machine].ID = [mytable].machineID "
+  )
+
+})
+
 test("test buildWhere", () => {
-  const testModel = "mytable"
   const testBody = {where: {price:{$gt:100, $lt:200}}}
-  expect(buildWhere(testModel, testBody)).toMatch(
+  expect(buildWhere(model, testBody)).toMatch(
     "where [mytable].[price] > 100  and [mytable].[price] < 200 "
   )
   const dateBodyTest = {where: {mydate:{$gt:'2018', $lt:'2019'}}}
-  expect(buildWhere(testModel, dateBodyTest)).toMatch(
+  expect(buildWhere(model, dateBodyTest)).toMatch(
     "where [mytable].[mydate] > '2018'  and [mytable].[mydate] < '2019' "
   )
 })

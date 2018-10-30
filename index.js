@@ -3,7 +3,7 @@ const { isValidTable, isValidColumn, isComputedColumn } = require("./validation"
 
 exports.getSelectSql = function(model, body) {
   var sql = buildSelectFrom(model, body)
-  sql += buildJoins(model, body)
+  sql += exports.buildJoins(model, body)
   sql += buildWhere(model, body)
   sql += buildOrderBy(model, body)
   sql += buildLimits(model, body)
@@ -103,7 +103,7 @@ function defaultFieldsForJoin(joinTable){
 
 }
 
-function buildJoins(model, body) {
+exports.buildJoins = function(model, body) {
   const { joins } = body
 
   if (!joins) {
