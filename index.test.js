@@ -1,5 +1,5 @@
 const validation = require("./validation")
-const { getSelectSql, getCountSql, getUpdateSql, getInsertSql, buildJoins } = require("./")
+const { getSelectSql, getCountSql, getUpdateSql, getInsertSql, buildJoins, buildWhere } = require("./")
 
 var schema = {
   machine: {columns:[{name:"ID"}, {name:"shortName"}]},

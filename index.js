@@ -4,7 +4,7 @@ const { isValidTable, isValidColumn, isComputedColumn } = require("./validation"
 exports.getSelectSql = function(model, body) {
   var sql = buildSelectFrom(model, body)
   sql += exports.buildJoins(model, body)
-  sql += buildWhere(model, body)
+  sql += exports.buildWhere(model, body)
   sql += buildOrderBy(model, body)
   sql += buildLimits(model, body)
 
@@ -13,7 +13,7 @@ exports.getSelectSql = function(model, body) {
 
 exports.getCountSql = function(model, body) {
   let sql = `select count(*) as count from [${model}] `
-  sql += buildWhere(model, body)
+  sql += exports.buildWhere(model, body)
   return sql
 }
 
@@ -163,7 +163,7 @@ function buildJoinOn(joinTable, joinObject){
 
 }
 
-buildWhere = function(model, body) {
+exports.buildWhere = function(model, body) {
   const { where } = body
   const { joins } = body
 
