@@ -31,8 +31,8 @@ Join operates by default on conventions. Default adds {joinTableName}Name to col
 
 jql | sql |
 ---|---|
-joins: ["mytable"] | select myTableName... inner join  [mytable] on [mytable].id = mytableID
-joins: ["-mytable"] | left outer join  [mytable] on [mytable].id = mytableID
+joins: ["mytable"] | select mytableName... inner join  [mytable] on [mytable].id = mytableID
+joins: ["-mytable"] | select mytableName... left outer join  [mytable] on [mytable].id = mytableID
 joins: [{model:"mytable", fields:["myField1", "myField2"]}] | select myField1, myField2... inner join  [mytable] on [mytable].id = mytableID
 joins: [{model:"machine",on:{"[machine].ID":"[mytable].machineID"}}] | inner join  [machine] on  [machine].ID = [mytable].machineID
 
