@@ -23,6 +23,19 @@ exports.isComputedColumn = function(tableName, columnName) {
 }
 
 exports.isValidColumn = function(tableName, columnName, joins = []){
+
+  if(columnName.includes(".")){
+    let tableColumnArray = columnName.split('.')
+    if(tableColumnArray.length != 2){
+      return false
+    }
+    if(!exports.isValidTable(tableColumnArray[0])){
+      return false
+    }
+    tableName = tableColumnArray[0]
+    columnName = tableColumnArray[1]
+  }
+
   const column = schema[tableName.toLowerCase()].columns.find(
     col => col.name === columnName.toLowerCase()
   )

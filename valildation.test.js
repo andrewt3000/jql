@@ -26,4 +26,7 @@ test("test validation utils", () => {
 
     expect(isComputedColumn("mytable", "computedCol")).toBeTruthy()
     expect(isComputedColumn("mytable", "mycolumn")).toBeFalsy()
+
+    expect(isValidColumn("mytable", "mytable.mycolumn")).toBeTruthy()
+    expect(isValidColumn("mytable", "mytable.mytable.mycolumn")).toBeFalsy()
   })
