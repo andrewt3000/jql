@@ -1,6 +1,6 @@
 {
   "name": "jq-lang",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "JSON Query Language",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/andrewt3000/jql#readme",
   "devDependencies": {
-    "jest": "^23.2.0"
+    "jest": "^23.6.0"
   }
 }
