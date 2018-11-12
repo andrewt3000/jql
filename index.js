@@ -186,7 +186,7 @@ exports.buildWhere = function(model, body) {
     if(jsonColumnName.includes(".")){
       let tableColumnArray = columnName.split('.')
       if(tableColumnArray.length != 2){
-        return false
+        throw new Error(`buildWhere: invalid column name(1): ${jsonColumnName}`)
       }
       tableName = tableColumnArray[0]
       columnName = tableColumnArray[1]
@@ -195,7 +195,7 @@ exports.buildWhere = function(model, body) {
     
   
     if (!isValidColumn(tableName, columnName, joins)) {
-      throw new Error(`buildWhere: invalid column name: ${columnName}`)
+      throw new Error(`buildWhere: invalid column name(2): ${columnName}`)
     }
 
     if (!firstPass) {
@@ -208,7 +208,7 @@ exports.buildWhere = function(model, body) {
     if (isNumber(value)) {
       sql += `${sqlColumnName} = ${value} `
     }
-      else if (value === null) {
+    else if (value === null) {
       sql += `${sqlColumnName} IS NULL `
     }  
     else if (typeof value === "object") {
