@@ -40,9 +40,22 @@ exports.isValidColumn = function(tableName, columnName, joins = []){
     col => col.name === columnName.toLowerCase()
   )
   if (column) return true
+
+  //todo: the default is array of strings, but could be array of objects.
   for (const joinTable of joins) {
-    if (columnName.toLowerCase() === `${joinTable}name`.toLowerCase())
-      return true
+    if(typeof joinTable === 'string'){
+      //default join field name
+      if (columnName.toLowerCase() === `${joinTable}name`.toLowerCase())
+        return true
+    }else{
+      //is this field on a join table? it could be in the fields operator
+      const jcolumn = schema[joinTable.model.toLowerCase()].columns.find(
+        col => col.name === columnName.toLowerCase()
+      )
+      if (jcolumn) return true
+    }
+
+
   }
   return false
 }
