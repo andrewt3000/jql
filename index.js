@@ -202,7 +202,6 @@ exports.buildWhere = function(model, body) {
       sql += " and "
     }
 
-    console.log('column name: ' + columnName)
     const value = where[jsonColumnName]
     //console.log
     if (isNumber(value)) {
