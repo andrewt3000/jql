@@ -177,21 +177,39 @@ exports.buildWhere = function(model, body) {
 
   let sql = "where "
   let firstPass = true
-  for (const key in where) {
-    if (!isValidColumn(model, key, joins)) {
-      throw new Error(`invalid column name: ${key}`)
+  for (const jsonColumnName in where) {
+
+    tableName = model
+    columnName = jsonColumnName
+    sqlColumnName = `[${tableName}].[${jsonColumnName}]`
+
+    if(jsonColumnName.includes(".")){
+      let tableColumnArray = columnName.split('.')
+      if(tableColumnArray.length != 2){
+        return false
+      }
+      tableName = tableColumnArray[0]
+      columnName = tableColumnArray[1]
+      sqlColumnName = `[${tableName}].[${columnName}]`
+    }
+    
+  
+    if (!isValidColumn(tableName, columnName, joins)) {
+      throw new Error(`buildWhere: invalid column name: ${columnName}`)
     }
 
     if (!firstPass) {
       sql += " and "
     }
 
-    const value = where[key]
+    console.log('column name: ' + columnName)
+    const value = where[jsonColumnName]
+    //console.log
     if (isNumber(value)) {
-      sql += `[${model}].[${key}] = ${value} `
+      sql += `${sqlColumnName} = ${value} `
     }
       else if (value === null) {
-      sql += `[${model}].[${key}] IS NULL `
+      sql += `${sqlColumnName} IS NULL `
     }  
     else if (typeof value === "object") {
       let firstValue = true
@@ -203,20 +221,20 @@ exports.buildWhere = function(model, body) {
         if (typeof setValue === 'string' || setValue instanceof String)
           setValue = "'" + setValue + "'"
         if (operatorVal === "$ne") {
-          sql += `[${model}].[${key}] <> ${setValue} `
+          sql += `${sqlColumnName} <> ${setValue} `
         } else if (operatorVal === "$gt") {
-          sql += `[${model}].[${key}] > ${setValue} `
+          sql += `${sqlColumnName} > ${setValue} `
         } else if (operatorVal === "$lt") {
-          sql += `[${model}].[${key}] < ${setValue} `
+          sql += `${sqlColumnName} < ${setValue} `
         } else if (operatorVal === "$gte") {
-          sql += `[${model}].[${key}] >= ${setValue} `
+          sql += `${sqlColumnName} >= ${setValue} `
         } else if (operatorVal === "$lte") {
-          sql += `[${model}].[${key}] <= ${setValue} `
+          sql += `${sqlColumnName} <= ${setValue} `
         }
         firstValue = false
       }
     } else {
-      sql += `[${model}].[${key}] = '${value}' `
+      sql += `${sqlColumnName} = '${value}' `
     }
     firstPass = false
   }

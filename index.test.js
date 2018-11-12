@@ -82,6 +82,15 @@ test("test join", () => {
 })
 
 test("test buildWhere", () => {
+  const basichWhere = {where: {price:200}}
+  expect(buildWhere(model, basichWhere)).toMatch(
+    "where [mytable].[price] = 200 "
+  )
+  
+  const whereWithDot = {where: {'mytable.price':200}}
+  expect(buildWhere(model, whereWithDot)).toMatch(
+    "where [mytable].[price] = 200 "
+  )
   const testBody = {where: {price:{$gt:100, $lt:200}}}
   expect(buildWhere(model, testBody)).toMatch(
     "where [mytable].[price] > 100  and [mytable].[price] < 200 "
