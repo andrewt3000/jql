@@ -1,5 +1,5 @@
 const validation = require("./validation")
-const { getSelectSql, getCountSql, getUpdateSql, getInsertSql, buildJoins, buildWhere } = require("./")
+const { getSelectSql, getCountSql, getUpdateSql, getInsertSql, buildJoins, buildWhere, formatField } = require("./")
 
 var schema = {
   machine: {columns:[{name:"ID"}, {name:"shortName"}]},
@@ -117,6 +117,15 @@ test("test insert", () => {
 test("test update", () => {
   expect(getUpdateSql(model, dataBody)).toMatch(
     "update [mytable] set [f1] = @f1, [f2] = @f2 where id = @id"
+  )
+})
+
+test("test formatField", () => {
+  expect(formatField('tbl.fld')).toMatch(
+    "[tbl].[fld]"
+  )
+  expect(formatField('fld')).toMatch(
+    "[fld]"
   )
 })
 

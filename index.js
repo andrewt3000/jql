@@ -253,23 +253,37 @@ function buildOrderBy(model, body) {
 
   let sql = "order by "
   for (const item of orderBy) {
+    //- is for desc
     if (item.charAt(0) === "-") {
+      //cut off the -
       const fieldName = item.slice(1)
       if (!isValidColumn(model, fieldName, joins)) {
         throw new Error(`invalid orderBy field name: ${fieldName}`)
       }
-      sql += `[${fieldName}] DESC, `
+      //if it's just a column name
+      sql += `${exports.formatField(fieldName)} DESC, `
     } else {
       if (!isValidColumn(model, item, joins)) {
         throw new Error(
           `invalid: Model: ${model} orderBy variable name: ${item}`
         )
       }
-      sql += `[${item}], `
+      sql += `${exports.formatField(item)}, `
     }
   }
+  //cut off the comma
   sql = sql.slice(0, -2)
   return sql
+}
+
+exports.formatField = function(field){
+  if(field.includes('.')){
+    //split 
+    fldArray = field.split('.', 2)
+    return `[${fldArray[0]}].[${fldArray[1]}]`
+  }else{
+    return `[${field}]`
+  }
 }
 
 function buildLimits(model, body) {
