@@ -21,7 +21,7 @@ Property | Description |Type |
 fields| table column names. If not set, returns tableName.* | string[]
 joins| Tables on which inner joins are performed. See join operations below  | string[] or object[]
 where| Object containing fields to form where clause. See Where clause operators below. | object
-orderBy| array of strings of field names to order by. '-fieldName' for descending.| string[]
+orderBy| array of strings of field names to order by. '-fieldName' for descending. 'tableName.fieldName' is valid. | string[]
 children | table name for child records. if children property exists, it will return an additional array of objects for each child table in input array.  pulls based on foreign key convention | string[]
 offset | offset for starting select (requires order by and limit) | int 
 limit | limit the number of rows returned (requires order by and limit) typically used for paging. | int
