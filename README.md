@@ -1,6 +1,8 @@
 # Install jql
 
+```
 npm install jq-lang
+```
 
 ### JQL = JSON Query Language
 JQL translates json to sql code. Syntax is ANSI sql, except offset and limit keywords (which is SQL Server). JQL is heavily influenced by mongo db.  
