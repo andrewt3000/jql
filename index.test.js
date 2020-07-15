@@ -38,7 +38,7 @@ const body = {
 
 test("test select", () => {
   expect(getSelectSql(model, body)).toMatch(
-    `select [mytable].[id], [mytable].[name], [mytable].[test] , [statusTable].name as statusTableName , [lookupTable].name as lookupTableName , [machine].name as machineName  from [mytable]  inner join  [statusTable] on [statusTable].id = statusTableID  left outer join  [lookupTable] on [lookupTable].id = lookupTableID  inner join  [machine] on  [machine].ID = [mytable].machineID where [mytable].[filter] = 1  and [mytable].[val] = 2 order by [name], [status] DESC OFFSET 3 ROWS  FETCH NEXT 10 ROWS ONLY `
+    `select [mytable].[id], [mytable].[name], [mytable].[test] , [statusTable].name as statusTableName , [lookupTable].name as lookupTableName , [machine].name as machineName  from [mytable]  inner join  [statusTable] on [statusTable].id = statusTableID  left outer join  [lookupTable] on [lookupTable].id = lookupTableID  inner join  [machine] on  [machine].ID = [mytable].machineID where [mytable].[filter] = 1  and [mytable].[val] = 2 order by [name] ASC, [status] DESC OFFSET 3 ROWS  FETCH NEXT 10 ROWS ONLY `
   )
 
   const whereNotEqual = {where: {qty:{$ne: 1}}}
@@ -55,6 +55,10 @@ test("test select", () => {
 
   const newJoin = {joins:[{model:"machine", fields:["ID", "shortName"]}]}
   expect(getSelectSql(model, newJoin)).toMatch("select [mytable].*  , machine.ID  , machine.shortName   from [mytable]  inner join  [machine] on [machine].id = machineID ")
+
+  const stringOrderBy = {orderBy: 'name'}
+  expect(getSelectSql(model, stringOrderBy)).toMatch("select [mytable].*   from [mytable] order by [name] ASC")
+
 
 })
 

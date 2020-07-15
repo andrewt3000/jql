@@ -252,28 +252,30 @@ function buildOrderBy(model, body) {
   }
 
   let sql = "order by "
-  for (const item of orderBy) {
-    //- is for desc
-    if (item.charAt(0) === "-") {
-      //cut off the -
-      const fieldName = item.slice(1)
-      if (!isValidColumn(model, fieldName, joins)) {
-        throw new Error(`invalid orderBy field name: ${fieldName}`)
-      }
-      //if it's just a column name
-      sql += `${exports.formatField(fieldName)} DESC, `
-    } else {
-      if (!isValidColumn(model, item, joins)) {
-        throw new Error(
-          `invalid: Model: ${model} orderBy variable name: ${item}`
-        )
-      }
-      sql += `${exports.formatField(item)}, `
+  if(typeof orderBy === 'string'){
+    sql += processOrderByField(model, orderBy, joins)
+  } else {
+    for (let fieldName of orderBy) {
+      sql += processOrderByField(model, fieldName, joins)
     }
   }
   //cut off the comma
   sql = sql.slice(0, -2)
   return sql
+}
+
+function processOrderByField(model, fieldName, joins){
+  let postFix = 'ASC'
+    //- is for desc
+    if (fieldName.charAt(0) === "-") {
+      //cut off the -
+      fieldName = fieldName.slice(1)
+      postFix = 'DESC'
+    } 
+    if (!isValidColumn(model, fieldName, joins)) {
+      throw new Error(`invalid orderBy field name: ${fieldName}`)
+    }
+    return `${exports.formatField(fieldName)} ${postFix}, `
 }
 
 exports.formatField = function(field){
