@@ -48,6 +48,7 @@ $gt | greater than >
 $gte | greater than or equal to >=
 $lt | less than <
 $lte | less than or equal to  <=
+like | sql like operator
 
 ##### Examples
 jql | sql |
