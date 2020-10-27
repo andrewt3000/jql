@@ -103,6 +103,10 @@ test("test buildWhere", () => {
   expect(buildWhere(model, dateBodyTest)).toMatch(
     "where [mytable].[mydate] > '2018'  and [mytable].[mydate] < '2019' "
   )
+  const likeBodyTest = {where: {name:{like:'ts%'}}}
+  expect(buildWhere(model, likeBodyTest)).toMatch(
+    "where [mytable].[name] like 'ts%' "
+  )
 })
 
 test("test count", () => {

@@ -229,6 +229,8 @@ exports.buildWhere = function(model, body) {
           sql += `${sqlColumnName} >= ${setValue} `
         } else if (operatorVal === "$lte") {
           sql += `${sqlColumnName} <= ${setValue} `
+        }else if (operatorVal === "like") {
+          sql += `${sqlColumnName} like ${setValue} `
         }
         firstValue = false
       }
