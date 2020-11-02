@@ -115,6 +115,13 @@ test("test count", () => {
   )
 })
 
+test("test top", () => {
+  expect(getSelectSql(model, {top: 3})).toMatch(
+    "select top 3 [mytable].*   from [mytable] "
+  )
+})
+
+
 const dataBody = {f1: "yo", f2:"fubar"}
 test("test insert", () => {
   expect(getInsertSql(model, dataBody)).toMatch(

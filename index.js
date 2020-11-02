@@ -49,6 +49,9 @@ function buildSelectFrom(model, body) {
   const { joins } = body
 
   let sql = "select "
+  if("top" in body){
+    sql += "top " + parseInt(body.top) + " "
+  }
   if (fields && fields.length > 0) {
     for (const f of fields) {
       if (!isValidColumn(model, f, joins)) {
